@@ -1,0 +1,1315 @@
+<!doctype html>
+<html lang="id">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio Flashcard - Arilano Excelovell Pinem</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+    }
+
+    /* Header Styles */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(102, 126, 234, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .header.scrolled {
+      padding: 0.5rem 2rem;
+      background: rgba(102, 126, 234, 1);
+    }
+
+    .logo {
+      font-size: 2rem;
+      font-weight: bold;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.1) rotate(-5deg);
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-menu li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      position: relative;
+      transition: all 0.3s ease;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+    }
+
+    .nav-menu li a:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .nav-menu li a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: white;
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    .nav-menu li a:hover::after {
+      width: 80%;
+    }
+
+    .social-icons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .social-icons a {
+      color: white;
+      font-size: 1.5rem;
+      transition: all 0.3s ease;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .social-icons a:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-5px) rotate(360deg);
+    }
+
+    /* Flashcard Container */
+    .flashcard-container {
+      height: 100%;
+      width: 100%;
+      position: relative;
+      padding-top: 80px;
+    }
+
+    .flashcard {
+      position: absolute;
+      top: 80px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      opacity: 0;
+      transform: translateY(100%);
+      transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      overflow-y: auto;
+      padding: 2rem;
+    }
+
+    .flashcard.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .flashcard.exit-up {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+
+    /* Navigation Buttons */
+    .nav-buttons {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      display: flex;
+      gap: 1rem;
+      z-index: 999;
+    }
+
+    .nav-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .nav-btn:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Page Indicator */
+    .page-indicator {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 0.5rem;
+      z-index: 999;
+    }
+
+    .page-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .page-dot.active {
+      background: white;
+      width: 30px;
+      border-radius: 6px;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      min-height: calc(100% - 80px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-shapes {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.1;
+      animation: float 20s infinite ease-in-out;
+    }
+
+    .shape:nth-child(1) {
+      width: 300px;
+      height: 300px;
+      background: white;
+      top: 10%;
+      left: 10%;
+      animation-delay: 0s;
+    }
+
+    .shape:nth-child(2) {
+      width: 200px;
+      height: 200px;
+      background: #ffd700;
+      top: 60%;
+      right: 15%;
+      animation-delay: 2s;
+    }
+
+    .shape:nth-child(3) {
+      width: 150px;
+      height: 150px;
+      background: #ff6b6b;
+      bottom: 20%;
+      left: 20%;
+      animation-delay: 4s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-30px) rotate(180deg); }
+    }
+
+    .hero-content {
+      text-align: center;
+      color: white;
+      z-index: 1;
+      max-width: 800px;
+      padding: 2rem;
+    }
+
+    .hero-content h1 {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      animation: slideInDown 1s ease;
+      text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-content .tagline {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      opacity: 0.9;
+      animation: slideInUp 1s ease 0.2s both;
+    }
+
+    .hero-content p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+      animation: fadeIn 1s ease 0.4s both;
+    }
+
+    .cta-button {
+      background: white;
+      color: #667eea;
+      padding: 1rem 3rem;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 1s ease 0.6s both;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes slideInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Skills Section */
+    .skills-section {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      padding: 3rem 2rem;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 3rem;
+      color: white;
+      margin-bottom: 3rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .skill-card {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .skill-card:hover {
+      transform: translateY(-10px) rotate(2deg);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .skill-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    .skill-card h3 {
+      font-size: 1.5rem;
+      color: #667eea;
+      margin-bottom: 1rem;
+    }
+
+    .skill-card p {
+      color: #666;
+      line-height: 1.6;
+    }
+
+    /* Documentation Section */
+    .documentation-section {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      padding: 3rem 2rem;
+    }
+
+    .filter-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-tab {
+      background: rgba(255, 255, 255, 0.3);
+      color: white;
+      border: 2px solid white;
+      padding: 0.8rem 2rem;
+      border-radius: 50px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .filter-tab:hover, .filter-tab.active {
+      background: white;
+      color: #4facfe;
+      transform: translateY(-3px);
+    }
+
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .doc-card {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .doc-card:hover {
+      transform: scale(1.05) rotate(-2deg);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .doc-image {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: white;
+    }
+
+    .doc-content {
+      padding: 1.5rem;
+    }
+
+    .doc-content h4 {
+      color: #667eea;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Portfolio Section */
+    .portfolio-section {
+      background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+      padding: 3rem 2rem;
+    }
+
+    .carousel-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .carousel {
+      display: flex;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      gap: 2rem;
+      padding: 2rem 0;
+      scrollbar-width: none;
+    }
+
+    .carousel::-webkit-scrollbar {
+      display: none;
+    }
+
+    .portfolio-card {
+      min-width: 350px;
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .portfolio-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .portfolio-image {
+      width: 100%;
+      height: 250px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      color: white;
+    }
+
+    .portfolio-caption {
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .portfolio-caption h4 {
+      color: #667eea;
+      margin-bottom: 0.5rem;
+    }
+
+    .carousel-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: white;
+      border: none;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .carousel-nav:hover {
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .carousel-nav.prev {
+      left: -25px;
+    }
+
+    .carousel-nav.next {
+      right: -25px;
+    }
+
+    /* Certificate Section */
+    .certificate-section {
+      background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+      padding: 3rem 2rem;
+    }
+
+    /* Video Section */
+    .video-section {
+      background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+      padding: 3rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .video-container {
+      max-width: 900px;
+      width: 100%;
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 15px;
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Footer Section */
+    .footer-section {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 3rem 2rem;
+      color: white;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 3rem;
+    }
+
+    .footer-column h3 {
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+    }
+
+    .footer-column p, .footer-column a {
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.8;
+      text-decoration: none;
+      display: block;
+      margin-bottom: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .footer-column a:hover {
+      color: white;
+      transform: translateX(5px);
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .footer-social a {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+
+    .footer-social a:hover {
+      background: white;
+      color: #667eea;
+      transform: translateY(-5px) rotate(360deg);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .header {
+        padding: 1rem;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+      }
+
+      .nav-menu {
+        display: none;
+      }
+
+      .social-icons {
+        gap: 0.5rem;
+      }
+
+      .social-icons a {
+        width: 35px;
+        height: 35px;
+        font-size: 1.2rem;
+      }
+
+      .hero-content h1 {
+        font-size: 2.5rem;
+      }
+
+      .hero-content .tagline {
+        font-size: 1.3rem;
+      }
+
+      .hero-content p {
+        font-size: 1rem;
+      }
+
+      .section-title {
+        font-size: 2rem;
+      }
+
+      .skills-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-buttons {
+        bottom: 1rem;
+        right: 1rem;
+        flex-direction: column;
+      }
+
+      .nav-btn {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+      }
+
+      .page-indicator {
+        bottom: 1rem;
+      }
+
+      .portfolio-card {
+        min-width: 280px;
+      }
+
+      .carousel-nav {
+        display: none;
+      }
+
+      .footer-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body><!-- Header -->
+  <header class="header" id="header">
+   <div class="logo">
+    AEP
+   </div>
+   <nav>
+    <ul class="nav-menu">
+     <li><a href="#" data-page="0">Home</a></li>
+     <li><a href="#" data-page="1">Interests &amp; Skills</a></li>
+     <li><a href="#" data-page="2">Documentation</a></li>
+     <li><a href="#" data-page="3">My Portfolio</a></li>
+     <li><a href="#" data-page="4">Certificate</a></li>
+     <li><a href="#" data-page="6">Contact</a></li>
+    </ul>
+   </nav>
+   <div class="social-icons"><a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer" title="WhatsApp">💬</a> <a href="https://instagram.com/yourprofile" target="_blank" rel="noopener noreferrer" title="Instagram">📷</a> <a href="https://linkedin.com/in/yourprofile" target="_blank" rel="noopener noreferrer" title="LinkedIn">💼</a> <a href="https://github.com/yourprofile" target="_blank" rel="noopener noreferrer" title="GitHub">🐙</a> <a href="https://behance.net/yourprofile" target="_blank" rel="noopener noreferrer" title="Behance">🎨</a>
+   </div>
+  </header><!-- Flashcard Container -->
+  <div class="flashcard-container"><!-- Page 1: Hero Section -->
+   <div class="flashcard active" data-page="0">
+    <div class="hero-section">
+     <div class="hero-shapes">
+      <div class="shape"></div>
+      <div class="shape"></div>
+      <div class="shape"></div>
+     </div>
+     <div class="hero-content">
+      <h1 id="hero-name">Arilano Excelovell Pinem</h1>
+      <div class="tagline" id="hero-tagline">
+       Design &amp; data enthusiast
+      </div>
+      <p id="hero-description">Passionate about creating beautiful, functional designs and turning data into meaningful insights. Let's build something amazing together!</p><button class="cta-button" onclick="nextPage()">Learn More</button>
+     </div>
+    </div>
+   </div><!-- Page 2: Interests & Skills -->
+   <div class="flashcard" data-page="1">
+    <div class="skills-section">
+     <h2 class="section-title">Interests &amp; Skills</h2>
+     <div class="skills-grid">
+      <div class="skill-card">
+       <div class="skill-icon">
+        🎨
+       </div>
+       <h3>UI/UX &amp; Design</h3>
+       <p>Creating intuitive and beautiful user experiences with modern design principles and user-centered approach.</p>
+      </div>
+      <div class="skill-card">
+       <div class="skill-icon">
+        💻
+       </div>
+       <h3>Front-End Development</h3>
+       <p>Building responsive and interactive web applications using HTML, CSS, JavaScript, and modern frameworks.</p>
+      </div>
+      <div class="skill-card">
+       <div class="skill-icon">
+        📊
+       </div>
+       <h3>Business Analytics</h3>
+       <p>Analyzing data to drive business decisions and create actionable insights for growth and optimization.</p>
+      </div>
+      <div class="skill-card">
+       <div class="skill-icon">
+        🗄️
+       </div>
+       <h3>Database Management</h3>
+       <p>Designing and managing efficient database systems for data storage, retrieval, and optimization.</p>
+      </div>
+     </div>
+    </div>
+   </div><!-- Page 3: Documentation -->
+   <div class="flashcard" data-page="2">
+    <div class="documentation-section">
+     <h2 class="section-title">Documentation</h2>
+     <div class="filter-tabs"><button class="filter-tab active" onclick="filterDocs('all')">All</button> <button class="filter-tab" onclick="filterDocs('organization')">Organization</button> <button class="filter-tab" onclick="filterDocs('web')">Web Design</button> <button class="filter-tab" onclick="filterDocs('app')">App Design</button> <button class="filter-tab" onclick="filterDocs('data')">Data Analyst</button>
+     </div>
+     <div class="doc-grid" id="docGrid">
+      <div class="doc-card" data-category="organization">
+       <div class="doc-image">
+        🏢
+       </div>
+       <div class="doc-content">
+        <h4>Team Meeting 2024</h4>
+        <p>Annual team gathering and strategic planning session</p>
+       </div>
+      </div>
+      <div class="doc-card" data-category="web">
+       <div class="doc-image">
+        🌐
+       </div>
+       <div class="doc-content">
+        <h4>E-Commerce Website</h4>
+        <p>Modern online shopping platform design</p>
+       </div>
+      </div>
+      <div class="doc-card" data-category="app">
+       <div class="doc-image">
+        📱
+       </div>
+       <div class="doc-content">
+        <h4>Mobile Banking App</h4>
+        <p>User-friendly financial management application</p>
+       </div>
+      </div>
+      <div class="doc-card" data-category="data">
+       <div class="doc-image">
+        📈
+       </div>
+       <div class="doc-content">
+        <h4>Sales Dashboard</h4>
+        <p>Interactive data visualization for business metrics</p>
+       </div>
+      </div>
+      <div class="doc-card" data-category="organization">
+       <div class="doc-image">
+        🎓
+       </div>
+       <div class="doc-content">
+        <h4>Workshop 2024</h4>
+        <p>Design thinking and innovation workshop</p>
+       </div>
+      </div>
+      <div class="doc-card" data-category="web">
+       <div class="doc-image">
+        ✨
+       </div>
+       <div class="doc-content">
+        <h4>Portfolio Website</h4>
+        <p>Creative portfolio showcase design</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div><!-- Page 4: Portfolio -->
+   <div class="flashcard" data-page="3">
+    <div class="portfolio-section">
+     <h2 class="section-title">My Portfolio</h2>
+     <div class="carousel-container"><button class="carousel-nav prev" onclick="scrollCarousel('portfolio', -1)">‹</button>
+      <div class="carousel" id="portfolioCarousel">
+       <div class="portfolio-card">
+        <div class="portfolio-image">
+         🎨
+        </div>
+        <div class="portfolio-caption">
+         <h4>Brand Identity Design</h4>
+         <p>Complete branding package for startup company</p>
+        </div>
+       </div>
+       <div class="portfolio-card">
+        <div class="portfolio-image">
+         🌐
+        </div>
+        <div class="portfolio-caption">
+         <h4>Corporate Website</h4>
+         <p>Professional website for consulting firm</p>
+        </div>
+       </div>
+       <div class="portfolio-card">
+        <div class="portfolio-image">
+         📱
+        </div>
+        <div class="portfolio-caption">
+         <h4>Mobile App UI</h4>
+         <p>Fitness tracking application interface</p>
+        </div>
+       </div>
+       <div class="portfolio-card">
+        <div class="portfolio-image">
+         🛍️
+        </div>
+        <div class="portfolio-caption">
+         <h4>E-Commerce Platform</h4>
+         <p>Full-featured online marketplace</p>
+        </div>
+       </div>
+       <div class="portfolio-card">
+        <div class="portfolio-image">
+         📊
+        </div>
+        <div class="portfolio-caption">
+         <h4>Analytics Dashboard</h4>
+         <p>Real-time business intelligence tool</p>
+        </div>
+       </div>
+      </div><button class="carousel-nav next" onclick="scrollCarousel('portfolio', 1)">›</button>
+     </div>
+    </div>
+   </div><!-- Page 5: Certificate -->
+   <div class="flashcard" data-page="4">
+    <div class="certificate-section">
+     <h2 class="section-title">Certificates</h2>
+     <div class="filter-tabs"><button class="filter-tab active" onclick="filterCerts('all')">All</button> <button class="filter-tab" onclick="filterCerts('organization')">Organization</button> <button class="filter-tab" onclick="filterCerts('web')">Web Design</button> <button class="filter-tab" onclick="filterCerts('app')">App Design</button> <button class="filter-tab" onclick="filterCerts('data')">Data Analyst</button>
+     </div>
+     <div class="carousel-container"><button class="carousel-nav prev" onclick="scrollCarousel('certificate', -1)">‹</button>
+      <div class="carousel" id="certificateCarousel">
+       <div class="portfolio-card" data-cert-category="web">
+        <div class="portfolio-image">
+         🏆
+        </div>
+        <div class="portfolio-caption">
+         <h4>Web Design Certification</h4>
+         <p>Advanced web design and development</p>
+        </div>
+       </div>
+       <div class="portfolio-card" data-cert-category="app">
+        <div class="portfolio-image">
+         📱
+        </div>
+        <div class="portfolio-caption">
+         <h4>Mobile App Design</h4>
+         <p>iOS and Android UI/UX design</p>
+        </div>
+       </div>
+       <div class="portfolio-card" data-cert-category="data">
+        <div class="portfolio-image">
+         📊
+        </div>
+        <div class="portfolio-caption">
+         <h4>Data Analytics</h4>
+         <p>Business intelligence and visualization</p>
+        </div>
+       </div>
+       <div class="portfolio-card" data-cert-category="organization">
+        <div class="portfolio-image">
+         🎓
+        </div>
+        <div class="portfolio-caption">
+         <h4>Leadership Training</h4>
+         <p>Team management and leadership skills</p>
+        </div>
+       </div>
+       <div class="portfolio-card" data-cert-category="web">
+        <div class="portfolio-image">
+         💻
+        </div>
+        <div class="portfolio-caption">
+         <h4>Frontend Development</h4>
+         <p>Modern JavaScript frameworks</p>
+        </div>
+       </div>
+      </div><button class="carousel-nav next" onclick="scrollCarousel('certificate', 1)">›</button>
+     </div>
+    </div>
+   </div><!-- Page 6: Video -->
+   <div class="flashcard" data-page="5">
+    <div class="video-section">
+     <div class="video-container">
+      <h2 class="section-title" style="color: #667eea; margin-bottom: 2rem;">Featured Video</h2>
+      <div class="video-wrapper"><iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+     </div>
+    </div>
+   </div><!-- Page 7: Footer/Contact -->
+   <div class="flashcard" data-page="6">
+    <div class="footer-section">
+     <div class="footer-content">
+      <div class="footer-column">
+       <h3>AEP</h3>
+       <p id="footer-description">Design &amp; data enthusiast creating beautiful and functional digital experiences.</p>
+       <div class="footer-social"><a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer">💬</a> <a href="https://instagram.com/yourprofile" target="_blank" rel="noopener noreferrer">📷</a> <a href="https://linkedin.com/in/yourprofile" target="_blank" rel="noopener noreferrer">💼</a> <a href="https://github.com/yourprofile" target="_blank" rel="noopener noreferrer">🐙</a> <a href="https://behance.net/yourprofile" target="_blank" rel="noopener noreferrer">🎨</a>
+       </div>
+      </div>
+      <div class="footer-column">
+       <h3>Quick Links</h3><a href="#" onclick="goToPage(0)">Home</a> <a href="#" onclick="goToPage(1)">Interests &amp; Skills</a> <a href="#" onclick="goToPage(2)">Documentation</a> <a href="#" onclick="goToPage(3)">Portfolio</a> <a href="#" onclick="goToPage(4)">Certificates</a>
+      </div>
+      <div class="footer-column">
+       <h3>Contact Info</h3>
+       <p id="footer-email">📧 arilano@example.com</p>
+       <p id="footer-phone">📱 +62 812 3456 7890</p>
+       <p>📍 Jakarta, Indonesia</p>
+      </div>
+     </div>
+     <div class="footer-bottom">
+      <p>© 2024 Arilano Excelovell Pinem. All rights reserved.</p>
+     </div>
+    </div>
+   </div>
+  </div><!-- Navigation Buttons -->
+  <div class="nav-buttons"><button class="nav-btn" id="prevBtn" onclick="prevPage()">← Previous</button> <button class="nav-btn" id="nextBtn" onclick="nextPage()">Next →</button>
+  </div><!-- Page Indicator -->
+  <div class="page-indicator" id="pageIndicator"></div>
+  <script>
+    // Configuration
+    const defaultConfig = {
+      full_name: "Arilano Excelovell Pinem",
+      tagline: "Design & data enthusiast",
+      hero_description: "Passionate about creating beautiful, functional designs and turning data into meaningful insights. Let's build something amazing together!",
+      email_address: "arilano@example.com",
+      phone_number: "+62 812 3456 7890",
+      footer_description: "Design & data enthusiast creating beautiful and functional digital experiences.",
+      primary_color: "#667eea",
+      secondary_color: "#764ba2",
+      accent_color: "#f093fb",
+      text_color: "#ffffff",
+      background_color: "#667eea"
+    };
+
+    let currentPage = 0;
+    const totalPages = 7;
+
+    // Initialize page indicators
+    function initPageIndicators() {
+      const indicator = document.getElementById('pageIndicator');
+      indicator.innerHTML = '';
+      for (let i = 0; i < totalPages; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'page-dot' + (i === 0 ? ' active' : '');
+        dot.onclick = () => goToPage(i);
+        indicator.appendChild(dot);
+      }
+    }
+
+    // Navigate to specific page
+    function goToPage(pageNum) {
+      if (pageNum < 0 || pageNum >= totalPages) return;
+      
+      const currentCard = document.querySelector('.flashcard.active');
+      const nextCard = document.querySelector(`.flashcard[data-page="${pageNum}"]`);
+      
+      if (currentCard === nextCard) return;
+      
+      // Determine animation direction
+      if (pageNum > currentPage) {
+        currentCard.classList.add('exit-up');
+      } else {
+        currentCard.style.transform = 'translateY(100%)';
+      }
+      
+      currentCard.classList.remove('active');
+      
+      setTimeout(() => {
+        nextCard.classList.add('active');
+        currentCard.classList.remove('exit-up');
+        currentCard.style.transform = '';
+      }, 100);
+      
+      currentPage = pageNum;
+      updateNavButtons();
+      updatePageIndicators();
+    }
+
+    // Next page
+    function nextPage() {
+      if (currentPage < totalPages - 1) {
+        goToPage(currentPage + 1);
+      }
+    }
+
+    // Previous page
+    function prevPage() {
+      if (currentPage > 0) {
+        goToPage(currentPage - 1);
+      }
+    }
+
+    // Update navigation buttons
+    function updateNavButtons() {
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      
+      prevBtn.disabled = currentPage === 0;
+      nextBtn.disabled = currentPage === totalPages - 1;
+    }
+
+    // Update page indicators
+    function updatePageIndicators() {
+      const dots = document.querySelectorAll('.page-dot');
+      dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentPage);
+      });
+    }
+
+    // Scroll carousel
+    function scrollCarousel(type, direction) {
+      const carousel = document.getElementById(type + 'Carousel');
+      const scrollAmount = 370;
+      carousel.scrollLeft += scrollAmount * direction;
+    }
+
+    // Filter documentation
+    function filterDocs(category) {
+      const cards = document.querySelectorAll('.doc-card');
+      const tabs = document.querySelectorAll('.documentation-section .filter-tab');
+      
+      tabs.forEach(tab => tab.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      cards.forEach(card => {
+        if (category === 'all' || card.dataset.category === category) {
+          card.style.display = 'block';
+          card.style.animation = 'fadeIn 0.5s ease';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Filter certificates
+    function filterCerts(category) {
+      const cards = document.querySelectorAll('#certificateCarousel .portfolio-card');
+      const tabs = document.querySelectorAll('.certificate-section .filter-tab');
+      
+      tabs.forEach(tab => tab.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      cards.forEach(card => {
+        if (category === 'all' || card.dataset.certCategory === category) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Header scroll effect
+    window.addEventListener('scroll', () => {
+      const header = document.getElementById('header');
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+
+    // Navigation menu click handler
+    document.querySelectorAll('.nav-menu a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const pageNum = parseInt(link.dataset.page);
+        goToPage(pageNum);
+      });
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        nextPage();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        prevPage();
+      }
+    });
+
+    // Element SDK implementation
+    async function onConfigChange(config) {
+      // Update hero section
+      const heroName = document.getElementById('hero-name');
+      const heroTagline = document.getElementById('hero-tagline');
+      const heroDescription = document.getElementById('hero-description');
+      
+      if (heroName) heroName.textContent = config.full_name || defaultConfig.full_name;
+      if (heroTagline) heroTagline.textContent = config.tagline || defaultConfig.tagline;
+      if (heroDescription) heroDescription.textContent = config.hero_description || defaultConfig.hero_description;
+      
+      // Update footer
+      const footerDescription = document.getElementById('footer-description');
+      const footerEmail = document.getElementById('footer-email');
+      const footerPhone = document.getElementById('footer-phone');
+      
+      if (footerDescription) footerDescription.textContent = config.footer_description || defaultConfig.footer_description;
+      if (footerEmail) footerEmail.textContent = '📧 ' + (config.email_address || defaultConfig.email_address);
+      if (footerPhone) footerPhone.textContent = '📱 ' + (config.phone_number || defaultConfig.phone_number);
+      
+      // Apply colors
+      const primaryColor = config.primary_color || defaultConfig.primary_color;
+      const secondaryColor = config.secondary_color || defaultConfig.secondary_color;
+      const accentColor = config.accent_color || defaultConfig.accent_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const backgroundColor = config.background_color || defaultConfig.background_color;
+      
+      // Update header
+      const header = document.querySelector('.header');
+      if (header) {
+        header.style.background = `rgba(${hexToRgb(primaryColor)}, 0.95)`;
+      }
+      
+      // Update hero section background
+      const heroSection = document.querySelector('.hero-section');
+      if (heroSection) {
+        heroSection.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
+      }
+      
+      // Update buttons
+      const navBtns = document.querySelectorAll('.nav-btn');
+      navBtns.forEach(btn => {
+        btn.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
+      });
+      
+      // Update CTA button
+      const ctaButton = document.querySelector('.cta-button');
+      if (ctaButton) {
+        ctaButton.style.color = primaryColor;
+      }
+      
+      // Update skill cards
+      const skillTitles = document.querySelectorAll('.skill-card h3');
+      skillTitles.forEach(title => {
+        title.style.color = primaryColor;
+      });
+      
+      // Update footer
+      const footerSection = document.querySelector('.footer-section');
+      if (footerSection) {
+        footerSection.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
+      }
+    }
+
+    function hexToRgb(hex) {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? 
+        `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : 
+        '102, 126, 234';
+    }
+
+    // Initialize Element SDK
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig: defaultConfig,
+        onConfigChange: onConfigChange,
+        mapToCapabilities: (config) => ({
+          recolorables: [
+            {
+              get: () => config.primary_color || defaultConfig.primary_color,
+              set: (value) => {
+                config.primary_color = value;
+                window.elementSdk.setConfig({ primary_color: value });
+              }
+            },
+            {
+              get: () => config.secondary_color || defaultConfig.secondary_color,
+              set: (value) => {
+                config.secondary_color = value;
+                window.elementSdk.setConfig({ secondary_color: value });
+              }
+            },
+            {
+              get: () => config.accent_color || defaultConfig.accent_color,
+              set: (value) => {
+                config.accent_color = value;
+                window.elementSdk.setConfig({ accent_color: value });
+              }
+            },
+            {
+              get: () => config.text_color || defaultConfig.text_color,
+              set: (value) => {
+                config.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            },
+            {
+              get: () => config.background_color || defaultConfig.background_color,
+              set: (value) => {
+                config.background_color = value;
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            }
+          ],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ["full_name", config.full_name || defaultConfig.full_name],
+          ["tagline", config.tagline || defaultConfig.tagline],
+          ["hero_description", config.hero_description || defaultConfig.hero_description],
+          ["email_address", config.email_address || defaultConfig.email_address],
+          ["phone_number", config.phone_number || defaultConfig.phone_number],
+          ["footer_description", config.footer_description || defaultConfig.footer_description]
+        ])
+      });
+    }
+
+    // Initialize on load
+    initPageIndicators();
+    updateNavButtons();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99ce610f060fa28e',t:'MTc2Mjg3MDI5MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
